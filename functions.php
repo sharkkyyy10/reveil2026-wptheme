@@ -4,8 +4,9 @@
  */
 
 function reveil2026_enqueue_assets() {
-    wp_enqueue_style( 'reveil2026-style', get_stylesheet_uri(), array(), wp_get_theme()->get('Version') );
-    wp_enqueue_script( 'reveil2026-animations', get_template_directory_uri() . '/assets/js/animations.js', array(), wp_get_theme()->get('Version'), true );
+    $theme_version = filemtime( get_stylesheet_directory() . '/style.css' );
+    wp_enqueue_style( 'reveil2026-style', get_stylesheet_uri(), array(), $theme_version );
+    wp_enqueue_script( 'reveil2026-animations', get_template_directory_uri() . '/assets/js/animations.js', array(), $theme_version, true );
 }
 add_action( 'wp_enqueue_scripts', 'reveil2026_enqueue_assets' );
 
@@ -97,9 +98,10 @@ function reveil2026_clear_stale_template_overrides() {
     set_transient( 'reveil2026_templates_cleared', '1', HOUR_IN_SECONDS );
 }
 
-// Run only if not already cleared this hour
-if ( ! get_transient( 'reveil2026_templates_cleared' ) ) {
+// Force run cleaner to guarantee FSE overrides are removed
+if ( ! get_transient( 'reveil2026_templates_cleared_v503' ) ) {
     add_action( 'init', 'reveil2026_clear_stale_template_overrides', 5 );
+    set_transient( 'reveil2026_templates_cleared_v503', '1', HOUR_IN_SECONDS );
 }
 
 
